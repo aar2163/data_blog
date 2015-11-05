@@ -63,9 +63,9 @@
 		<script type="text/javascript">
 //chapter 08 : 06
 			//Width and height
-			var w = 800;
-			var h = 400;
-			var padding = 40;
+			var w = 900;
+			var h = 500;
+			var padding = 70;
 			
 			
 			//Static dataset
@@ -77,6 +77,19 @@
 						  ];*/
 
                         var dataset;
+
+                        function make_log_bi(d) {
+                         var l = Math.log10(d); 
+                         if(l == Math.round(l))
+                         { 
+                          return d/1e09;
+                         }
+                         else
+                         {
+                          return "";
+                         }
+                        };
+                        
 
                         var data = d3.json("teste.json", function(data) {
                          //alert(data.Presidencia);
@@ -91,12 +104,12 @@
 		         //Create scale functions
 		         var xScale = d3.scale.log()
 		         					 //.domain([0, d3.max(dataset, function(d) { return d[0]; })])
-		         					 .domain([Math.pow(10,7), Math.pow(10,11)])
+		         					 .domain([Math.pow(10,7), Math.pow(10,12)])
 		         					 .range([padding, w - padding * 2]);
 
 		         var yScale = d3.scale.log()
 		         					 //.domain([0, d3.max(dataset, function(d) { return d[1]; })])
-		         					 .domain([Math.pow(10,7), Math.pow(10,11)])
+		         					 .domain([Math.pow(10,7), Math.pow(10,12)])
 		         					 .range([h - padding, padding]);
 
 		         var rScale = d3.scale.linear()
@@ -108,7 +121,9 @@
 		         				  .scale(xScale)
 		         				  .orient("bottom")
                                                           //.innerTickSize(-h+padding*2)
-		         				  .ticks(5);
+		         				  .ticks(5)
+                                                          .tickFormat(function(d) { return make_log_bi(d) });
+                                                          //.tickFormat(function(d) { return "$" + Math.round(d/1e06)});
 
 		         //Define Y axis
 		         var yAxis = d3.svg.axis()
@@ -116,7 +131,8 @@
 		         				  .orient("left")
                                                           //.innerTickSize(-w+padding*3)
                                                            .tickPadding(10)
-		         				  .ticks(5);
+		         				  .ticks(5)
+                                                          .tickFormat(function(d) { return make_log_bi(d) });
 
 
 		         //Create SVG element
@@ -217,7 +233,7 @@
                             .attr("x", w * 0.58)
                             .attr("y", h - 6)
 		            .attr("font-weight", "bold")
-                            .text("Gasto com Pessoal (R$)");
+                            .text("Gasto com Pessoal (R$ bi)");
 
                          svg.append("text")
                             .attr("class", "y label")
@@ -227,7 +243,7 @@
                             .attr("dy", ".75em")
                             .attr("transform", "rotate(-90)")
 		            .attr("font-weight", "bold")
-                            .text("Outros Gastos (R$)");
+                            .text("Outros Gastos (R$ bi)");
                        };
 
 
