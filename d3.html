@@ -90,6 +90,30 @@
                          }
                         };
                         
+                        function choose_color(d) {
+                         if(d > 0.75)
+                         { 
+                          return "#FF3D00";
+                         }
+                         else if(d > 0.25)
+                         {
+                          return "#FBFE00";
+                         }
+                         else
+                         {
+                          return "#0D50AB";
+                         }
+                        };
+
+                        function circle_legend(svg, v, y) {
+                         svg.append("circle")
+                          .attr("cx", 800)
+                          .attr("cy", y)
+                          .style("fill", function(d) {
+                            return choose_color(v);
+                           })
+                          .attr("r", 10);
+                        };
 
                         var data = d3.json("teste.json", function(data) {
                          //alert(data.Presidencia);
@@ -141,6 +165,7 @@
 		         			.attr("width", w)
 		         			.attr("height", h);
 
+
 		         //Create circles
 		         svg.selectAll("circle")
 		            .data(dataset)
@@ -153,9 +178,9 @@
 		            		return yScale(d[1]);
 		            })
 		            .attr("r", function(d) {
-		            		return 15;
+		            		return 17;
 		            })
-                            .style("fill", "#748EB4")
+                            .style("fill", function(d) { return choose_color(d[0]/(d[0]+d[1])); })
                             .on("mouseover", function(d) {
 
 		         		//Get this bar's x/y values, then augment for the tooltip
@@ -192,6 +217,10 @@
 		         		d3.select("#tooltip").classed("hidden", true);
 		         		
 		            });
+
+                         circle_legend(svg,0.8,100);
+                         circle_legend(svg,0.5,150);
+                         circle_legend(svg,0.2,200);
 
 		         
 		         //Create labels
