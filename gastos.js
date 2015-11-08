@@ -3,7 +3,9 @@
 			//Width and height
 			var w = 900;
 			var h = 500;
-			var padding = 70;
+			var padding_r = 100;
+			var padding_l = 70;
+                        var padding_y = 70;
 			
 			
 			//Static dataset
@@ -22,8 +24,10 @@
                          make_chart(data);
                         });
 
+
                         function make_chart(data) {
                          var dataset = data.values;
+
 
 			
 
@@ -31,12 +35,12 @@
 		         var xScale = d3.scale.log()
 		         					 //.domain([0, d3.max(dataset, function(d) { return d[0]; })])
 		         					 .domain([Math.pow(10,7), Math.pow(10,12)])
-		         					 .range([padding, w - padding * 2]);
+		         					 .range([padding_l, w - padding_r * 2]);
 
 		         var yScale = d3.scale.log()
 		         					 //.domain([0, d3.max(dataset, function(d) { return d[1]; })])
 		         					 .domain([Math.pow(10,7), Math.pow(10,12)])
-		         					 .range([h - padding, padding]);
+		         					 .range([h - padding_y, padding_y]);
 
 		         var rScale = d3.scale.linear()
 		         					 .domain([0, d3.max(dataset, function(d) { return d[1]; })])
@@ -72,17 +76,12 @@
 		         svg.selectAll("circle")
 		            .data(dataset)
 		            .enter()
-		            .append("circle")
-		            .attr("cx", function(d) {
-		            		return xScale(d[0]);
-		            })
-		            .attr("cy", function(d) {
-		            		return yScale(d[1]);
-		            })
-		            .attr("r", function(d) {
-		            		return 17;
-		            })
-                            .style("fill", function(d) { return choose_color(d[0]/(d[0]+d[1])); })
+		            .append("circle");
+
+
+                         do_circle_pos(svg,xScale,yScale);
+
+		         svg.selectAll("circle")
                             .on("mouseover", function(d) {
 
 		         		//Get this bar's x/y values, then augment for the tooltip
@@ -120,9 +119,10 @@
 		         		
 		            });
 
-                         circle_legend(svg,0.8,100);
+                         /*circle_legend(svg,0.8,100);
                          circle_legend(svg,0.5,150);
-                         circle_legend(svg,0.2,200);
+                         circle_legend(svg,0.2,200);*/
+
 
 		         
 		         //Create labels
@@ -130,36 +130,37 @@
 		            .data(dataset)
 		            .enter()
 		            .append("text")
-		            .text(function(d) {
-		            		//return d[0] + "," + d[1];
-                                         return d[2];
-		            })
-		            .attr("x", function(d) {
-		            		return xScale(d[0]) - 7;
-		            })
-		            .attr("y", function(d) {
-		            		return yScale(d[1]) + 4;
-		            })
+                            .attr("class", "label")
 		            .attr("font-family", "sans-serif")
 		            .attr("font-size", "11px")
 		            .attr("font-weight", "bold")
 		            .attr("fill", "black");
+
+                         do_label_pos(svg,xScale,yScale);
 		         
 		         
 		         //Create X axis
 		         svg.append("g")
 		         	.attr("class", "axis")
-		         	.attr("transform", "translate(0," + (h - padding) + ")")
+		         	.attr("transform", "translate(0," + (h - padding_l) + ")")
 		         	.call(xAxis);
 		         
 		         //Create Y axis
 		         svg.append("g")
 		         	.attr("class", "axis")
-		         	.attr("transform", "translate(" + padding + ",0)")
+		         	.attr("transform", "translate(" + padding_l + ",0)")
 		         	.call(yAxis);
 
+                         rec_legend(svg,0.2,750,30);
+                         rec_legend(svg,0.5,780,60);
+                         rec_legend(svg,0.8,840,30);
+
+                         append_text(svg,w-padding_r+40,70,"% Pessoal");
+                         //append_text(svg,w-40,105,">= 75");
+                         //append_text(svg,w-5,155,">= 25 e < 75");
+
                          svg.append("text")
-                            .attr("class", "x label")
+                            .attr("class", "xlabel")
                             .attr("text-anchor", "end")
                             .attr("x", w * 0.58)
                             .attr("y", h - 6)
@@ -167,7 +168,7 @@
                             .text("Gasto com Pessoal (R$ bi)");
 
                          svg.append("text")
-                            .attr("class", "y label")
+                            .attr("class", "ylabel")
                             .attr("text-anchor", "end")
                             .attr("x", -w * 0.17)
                             .attr("y", 1)
@@ -175,5 +176,20 @@
                             .attr("transform", "rotate(-90)")
 		            .attr("font-weight", "bold")
                             .text("Outros Gastos (R$ bi)");
+
+                        d3.select("p")
+                         .on("click", function() {
+                          data = d3.json("teste2.json", function(data) {
+                           dataset = data.values;
+
+		           svg.selectAll("circle")
+		            .data(dataset);
+                           do_circle_pos(svg,xScale,yScale);
+
+		           var lala = svg.selectAll(".label")
+		            .data(dataset);
+                           do_label_pos(svg,xScale,yScale);
+                          });
+                         });
                        };
 
