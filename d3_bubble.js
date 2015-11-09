@@ -22,7 +22,7 @@
                          }
                          else
                          {
-                          return "#0D50AB";
+                          return "#7887AB";
                          }
                         };
 
@@ -84,4 +84,19 @@
 		            .attr("y", function(d) {
 		            		return yScale(d[1]) + 4;
 		            })
+                        };
+                        function get_next_year(year)
+                        {
+                         var years = [2004,2005,2006,2007,2008,2009,2011];
+                         var idf = years.indexOf(year);
+                         var idf1 = idf + 1;
+                         if (idf1 < years.length)
+                         {
+                          return years[idf1];
+                         }
+                         else
+                         {
+                          return years[idf];
+                         }
+                         
                         };

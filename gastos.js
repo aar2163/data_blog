@@ -19,14 +19,17 @@
                         var dataset;
 
 
-                        var data = d3.json("teste.json", function(data) {
+                        var data = d3.json("despesas.json", function(data) {
                          //alert(data.Presidencia);
                          make_chart(data);
                         });
 
 
                         function make_chart(data) {
-                         var dataset = data.values;
+
+                         var year = 2004;
+                         var vy = 'values' + year;
+                         var dataset = data[vy];
 
 
 			
@@ -70,6 +73,15 @@
 		         			.append("svg")
 		         			.attr("width", w)
 		         			.attr("height", h);
+
+                         /*svg.selectAll("img")
+                                .enter()
+                                .append("img")
+                                .attr("xlink:href", "@Url.Content("navigate-right.png")")
+                                .attr("x", "60")
+                                .attr("y", "60")
+                                .attr("width", "20")
+                                .attr("height", "20");*/
 
 
 		         //Create circles
@@ -156,6 +168,8 @@
                          rec_legend(svg,0.8,840,30);
 
                          append_text(svg,w-padding_r+40,70,"% Pessoal");
+                         append_text(svg,785,120,"25");
+                         append_text(svg,845,120,"75");
                          //append_text(svg,w-40,105,">= 75");
                          //append_text(svg,w-5,155,">= 25 e < 75");
 
@@ -165,7 +179,7 @@
                             .attr("x", w * 0.58)
                             .attr("y", h - 6)
 		            .attr("font-weight", "bold")
-                            .text("Gasto com Pessoal (R$ bi)");
+                            .text("Gasto com Pessoal e Encargos Sociais (R$ bi)");
 
                          svg.append("text")
                             .attr("class", "ylabel")
@@ -179,8 +193,9 @@
 
                         d3.select("p")
                          .on("click", function() {
-                          data = d3.json("teste2.json", function(data) {
-                           dataset = data.values;
+                           year = get_next_year(year);
+                           vy = 'values' + year;
+                           dataset = data[vy];
 
 		           svg.selectAll("circle")
 		            .data(dataset);
@@ -189,7 +204,6 @@
 		           var lala = svg.selectAll(".label")
 		            .data(dataset);
                            do_label_pos(svg,xScale,yScale);
-                          });
                          });
                        };
 
