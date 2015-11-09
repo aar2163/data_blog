@@ -49,6 +49,16 @@
 		         					 .domain([0, d3.max(dataset, function(d) { return d[1]; })])
 		         					 .range([10, 15]);
 
+		         var xScale2 = d3.scale.linear()
+		         					 //.domain([0, d3.max(dataset, function(d) { return d[0]; })])
+		         					 .domain([Math.pow(10,7), Math.pow(10,12)])
+		         					 .range([padding_l, w - padding_r * 2]);
+
+		         var yScale2 = d3.scale.linear()
+		         					 //.domain([0, d3.max(dataset, function(d) { return d[1]; })])
+		         					 .domain([Math.pow(10,7), Math.pow(10,12)])
+		         					 .range([h - padding_y, padding_y]);
+
 		         //Define X axis
 		         var xAxis = d3.svg.axis()
 		         				  .scale(xScale)
@@ -67,12 +77,34 @@
 		         				  .ticks(5)
                                                           .tickFormat(function(d) { return make_log_bi(d) });
 
+		         //Define X axis
+		         var xAxis2 = d3.svg.axis()
+		         				  .scale(xScale2)
+		         				  .orient("bottom")
+                                                          //.innerTickSize(-h+padding*2)
+		         				  .ticks(5);
+                                                          //.tickFormat(function(d) { return make_log_bi(d) });
+                                                          //.tickFormat(function(d) { return "$" + Math.round(d/1e06)});
+
+		         //Define Y axis
+		         var yAxis2 = d3.svg.axis()
+		         				  .scale(yScale2)
+		         				  .orient("left")
+                                                          //.innerTickSize(-w+padding*3)
+                                                           .tickPadding(10)
+		         				  .ticks(5);
+                                                          //.tickFormat(function(d) { return make_log_bi(d) });
+
 
 		         //Create SVG element
-		         var svg = d3.select("body")
+		         var svg = d3.select("#div1")
 		         			.append("svg")
 		         			.attr("width", w)
 		         			.attr("height", h);
+
+		         var svg2 = d3.select("#div2")
+		         			.append("svg")
+		         			.attr("width", w)
 
 
 
@@ -173,6 +205,17 @@
 		         	.attr("class", "axis")
 		         	.attr("transform", "translate(" + padding_l + ",0)")
 		         	.call(yAxis);
+
+		         svg2.append("g")
+		         	.attr("class", "axis")
+		         	.attr("transform", "translate(0," + (h + - padding_l) + ")")
+		         	.call(xAxis2);
+		         
+		         //Create Y axis
+		         svg2.append("g")
+		         	.attr("class", "axis")
+		         	.attr("transform", "translate(" + padding_l + ",0)")
+		         	.call(yAxis2);
 
                          rec_legend(svg,0.2,750,30);
                          rec_legend(svg,0.5,780,60);
