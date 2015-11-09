@@ -74,14 +74,13 @@
 		         			.attr("width", w)
 		         			.attr("height", h);
 
-                         /*svg.selectAll("img")
-                                .enter()
-                                .append("img")
-                                .attr("xlink:href", "@Url.Content("navigate-right.png")")
-                                .attr("x", "60")
-                                .attr("y", "60")
+                         svg.append("image")
+                                .attr("xlink:href", "navigate-right.png")
+                                .attr("class", "next_icon")
+                                .attr("x", "500")
+                                .attr("y", "25")
                                 .attr("width", "20")
-                                .attr("height", "20");*/
+                                .attr("height", "20");
 
 
 		         //Create circles
@@ -191,7 +190,7 @@
 		            .attr("font-weight", "bold")
                             .text("Outros Gastos (R$ bi)");
 
-                        d3.select("p")
+                        d3.select(".next_icon")
                          .on("click", function() {
                            year = get_next_year(year);
                            vy = 'values' + year;
