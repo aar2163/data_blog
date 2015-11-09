@@ -3,6 +3,7 @@
 			//Width and height
 			var w = 900;
 			var h = 500;
+			var h2 = 300;
 			var padding_r = 100;
 			var padding_l = 70;
                         var padding_y = 70;
@@ -30,7 +31,17 @@
                          var year = 2004;
                          var vy = 'values' + year;
                          var dataset = data[vy];
+                         var dataset2 = data.pib;
 
+                         var domain2 = [];
+                         var range2 = [];
+                         var delta_x = w/dataset2.length;
+
+                         for (var i = 0; i < dataset2.length; i++)
+                         {
+                          domain2.push(dataset2[i][0]);
+                          range2.push(padding_l + i*delta_x);
+                         }
 
 			
 
@@ -49,15 +60,16 @@
 		         					 .domain([0, d3.max(dataset, function(d) { return d[1]; })])
 		         					 .range([10, 15]);
 
-		         var xScale2 = d3.scale.linear()
-		         					 //.domain([0, d3.max(dataset, function(d) { return d[0]; })])
-		         					 .domain([Math.pow(10,7), Math.pow(10,12)])
-		         					 .range([padding_l, w - padding_r * 2]);
+		         var xScale2 = d3.scale.ordinal()
+		         					 .domain(domain2)
+		         					 //.domain([Math.pow(10,7), Math.pow(10,12)])
+		         					 //.range([padding_l, w - padding_r * 2]);
+		         					 .range(range2);
 
 		         var yScale2 = d3.scale.linear()
-		         					 //.domain([0, d3.max(dataset, function(d) { return d[1]; })])
-		         					 .domain([Math.pow(10,7), Math.pow(10,12)])
-		         					 .range([h - padding_y, padding_y]);
+		         					 .domain([0, d3.max(dataset2, function(d) { return d[1]; })])
+		         					 //.domain([Math.pow(10,7), Math.pow(10,12)])
+		         					 .range([h2 - padding_y, padding_y]);
 
 		         //Define X axis
 		         var xAxis = d3.svg.axis()
@@ -105,6 +117,7 @@
 		         var svg2 = d3.select("#div2")
 		         			.append("svg")
 		         			.attr("width", w)
+		         			.attr("height", h2);
 
 
 
@@ -116,6 +129,23 @@
 
 
                          do_circle_pos(svg,xScale,yScale);
+
+                         alert(xScale2(2004));
+
+		         svg2.selectAll("circle")
+		            .data(dataset2)
+		            .enter()
+		            .append("circle")
+		            .attr("cx", function(d) {
+		            		return xScale2(d[0]);
+		            })
+		            .attr("cy", function(d) {
+		            		return yScale2(d[1]);
+		            })
+		            .attr("r", 10)
+                            .style("fill", function(d) { return choose_color(d[0]/(d[0]+d[1])); });
+
+
 
 		         svg.selectAll("circle")
                             .on("mouseover", function(d) {
@@ -208,7 +238,7 @@
 
 		         svg2.append("g")
 		         	.attr("class", "axis")
-		         	.attr("transform", "translate(0," + (h + - padding_l) + ")")
+		         	.attr("transform", "translate(0," + (h2 + - padding_l) + ")")
 		         	.call(xAxis2);
 		         
 		         //Create Y axis
