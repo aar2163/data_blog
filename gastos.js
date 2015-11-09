@@ -74,13 +74,6 @@
 		         			.attr("width", w)
 		         			.attr("height", h);
 
-                         svg.append("image")
-                                .attr("xlink:href", "navigate-right.png")
-                                .attr("class", "next_icon")
-                                .attr("x", "500")
-                                .attr("y", "25")
-                                .attr("width", "20")
-                                .attr("height", "20");
 
 
 		         //Create circles
@@ -136,6 +129,7 @@
 
 
 		         
+                         var year_x = 380;
 		         //Create labels
 		         svg.selectAll("text")
 		            .data(dataset)
@@ -146,6 +140,24 @@
 		            .attr("font-size", "11px")
 		            .attr("font-weight", "bold")
 		            .attr("fill", "black");
+
+                         svg.append("image")
+                                .attr("xlink:href", "forward.png")
+                                .attr("class", "next_icon")
+                                .attr("x", year_x+20)
+                                .attr("y", "30")
+                                .attr("width", "20")
+                                .attr("height", "20");
+
+                         svg.append("image")
+                                .attr("xlink:href", "back.png")
+                                .attr("class", "previous_icon")
+                                .attr("x", year_x-70)
+                                .attr("y", "30")
+                                .attr("width", "20")
+                                .attr("height", "20");
+
+                         var tyear = append_text(svg,year_x,45,year);
 
                          do_label_pos(svg,xScale,yScale);
 		         
@@ -192,15 +204,33 @@
 
                         d3.select(".next_icon")
                          .on("click", function() {
-                           year = get_next_year(year);
+                           year = get_next_year(year,1);
                            vy = 'values' + year;
                            dataset = data[vy];
+
+                           tyear.text(year);
 
 		           svg.selectAll("circle")
 		            .data(dataset);
                            do_circle_pos(svg,xScale,yScale);
 
-		           var lala = svg.selectAll(".label")
+		           svg.selectAll(".label")
+		            .data(dataset);
+                           do_label_pos(svg,xScale,yScale);
+                         });
+                        d3.select(".previous_icon")
+                         .on("click", function() {
+                           year = get_next_year(year,-1);
+                           vy = 'values' + year;
+                           dataset = data[vy];
+
+                           tyear.text(year);
+
+		           svg.selectAll("circle")
+		            .data(dataset);
+                           do_circle_pos(svg,xScale,yScale);
+
+		           svg.selectAll(".label")
 		            .data(dataset);
                            do_label_pos(svg,xScale,yScale);
                          });

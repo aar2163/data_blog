@@ -48,12 +48,13 @@
                         };
 
                         function append_text(svg,x,y,t) {
-                         svg.append("text")
+                         var t = svg.append("text")
                             .attr("text-anchor", "end")
                             .attr("x", x)
                             .attr("y", y)
 		            .attr("font-weight", "bold")
                             .text(t);
+                         return t;
                         };
 
                         function do_circle_pos(svg,xScale,yScale) 
@@ -85,12 +86,12 @@
 		            		return yScale(d[1]) + 4;
 		            })
                         };
-                        function get_next_year(year)
+                        function get_next_year(year, delta)
                         {
                          var years = [2004,2005,2006,2007,2008,2009,2011];
                          var idf = years.indexOf(year);
-                         var idf1 = idf + 1;
-                         if (idf1 < years.length)
+                         var idf1 = idf + delta;
+                         if (idf1 >= 0 && idf1 < years.length)
                          {
                           return years[idf1];
                          }
