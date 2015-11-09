@@ -22,7 +22,7 @@
                          }
                          else
                          {
-                          return "#7887AB";
+                          return "#CDDAFB";
                          }
                         };
 

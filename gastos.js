@@ -43,6 +43,7 @@
                           range2.push(padding_l + i*delta_x);
                          }
 
+
 			
 
 		         //Create scale functions
@@ -119,6 +120,10 @@
 		         			.attr("width", w)
 		         			.attr("height", h2);
 
+                         var line = d3.svg.line()
+                           .x(function(d) { return xScale2(d[0]); })
+                           .y(function(d) { return yScale2(d[1]); });
+
 
 
 		         //Create circles
@@ -130,20 +135,7 @@
 
                          do_circle_pos(svg,xScale,yScale);
 
-                         alert(xScale2(2004));
 
-		         svg2.selectAll("circle")
-		            .data(dataset2)
-		            .enter()
-		            .append("circle")
-		            .attr("cx", function(d) {
-		            		return xScale2(d[0]);
-		            })
-		            .attr("cy", function(d) {
-		            		return yScale2(d[1]);
-		            })
-		            .attr("r", 10)
-                            .style("fill", function(d) { return choose_color(d[0]/(d[0]+d[1])); });
 
 
 
@@ -275,8 +267,43 @@
 		            .attr("font-weight", "bold")
                             .text("Outros Gastos (R$ bi)");
 
-                        d3.select(".next_icon")
-                         .on("click", function() {
+                        //Make second chart
+
+                         var data2 = ["pib", "gastos"];
+
+                         for (var i = 0; i < data2.length; i++)
+                         {
+
+                          var color = "#7887AB";
+                          var cl = data2[i];
+                          var dataset2 = data[cl];
+
+		          svg2.selectAll("." + cl)
+		            .data(dataset2)
+		            .enter()
+		            .append("circle")
+                            .attr("class", cl)
+		            .attr("cx", function(d) {
+		            		return xScale2(d[0]);
+		            })
+		            .attr("cy", function(d) {
+		            		return yScale2(d[1]);
+		            })
+		            .attr("r", 8)
+                            .style("fill", color);
+
+                          svg2.append("path")
+                          .datum(dataset2)
+                          .attr("d", line)
+                          .attr("stroke", color)
+                          .attr("stroke-width" , 3)
+                          .attr("fill", "none");
+                         }
+
+                        //Transitions
+
+                         d3.select(".next_icon")
+                          .on("click", function() {
                            year = get_next_year(year,1);
                            vy = 'values' + year;
                            dataset = data[vy];
@@ -291,8 +318,8 @@
 		            .data(dataset);
                            do_label_pos(svg,xScale,yScale);
                          });
-                        d3.select(".previous_icon")
-                         .on("click", function() {
+                         d3.select(".previous_icon")
+                          .on("click", function() {
                            year = get_next_year(year,-1);
                            vy = 'values' + year;
                            dataset = data[vy];
