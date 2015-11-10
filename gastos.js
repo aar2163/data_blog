@@ -2,11 +2,14 @@
 //chapter 08 : 06
 			//Width and height
 			var w = 900;
-			var h = 500;
+			var h = 520;
 			var h2 = 300;
 			var padding_r = 100;
 			var padding_l = 70;
+                        var padding_y_top = 110;
                         var padding_y = 70;
+                        var padding_y2_top = 30;
+                        var padding_y2 = 70;
 			
 			
 			//Static dataset
@@ -31,17 +34,19 @@
                          var year = 2004;
                          var vy = 'values' + year;
                          var dataset = data[vy];
-                         var dataset2 = data.total;
+                         var dataset2 = data.pib;
 
                          var domain2 = [];
                          var range2 = [];
-                         var delta_x = w/dataset2.length;
+                         var delta_x = (w-padding_l)/dataset2.length;
 
                          for (var i = 0; i < dataset2.length; i++)
                          {
                           domain2.push(dataset2[i][0]);
                           range2.push(padding_l + i*delta_x);
                          }
+
+                         var size_x = padding_l + (dataset2.length-1)*delta_x;
 
 
 			
@@ -55,7 +60,7 @@
 		         var yScale = d3.scale.log()
 		         					 //.domain([0, d3.max(dataset, function(d) { return d[1]; })])
 		         					 .domain([Math.pow(10,7), Math.pow(10,12)])
-		         					 .range([h - padding_y, padding_y]);
+		         					 .range([h - padding_y, padding_y_top]);
 
 		         var rScale = d3.scale.linear()
 		         					 .domain([0, d3.max(dataset, function(d) { return d[1]; })])
@@ -68,10 +73,11 @@
 		         					 .range(range2);
 
 		         var yScale2 = d3.scale.linear()
-		         					 .domain([0, d3.max(dataset2, function(d) { return d[1]; })])
-		         					 //.domain([Math.pow(10,10), Math.pow(10,13)])
+		         					 .domain([0, 5e12])
+		         					 //.domain([Math.pow(10,11), Math.pow(10,13)])
 		         					 //.domain([Math.pow(10,7), Math.pow(10,12)])
-		         					 .range([h2 - padding_y, padding_y]);
+		         					 .range([h2 - padding_y2, padding_y2_top]);
+
 
 		         //Define X axis
 		         var xAxis = d3.svg.axis()
@@ -121,7 +127,7 @@
 
 		         var svg2 = d3.select("#div2")
 		         			.append("svg")
-		         			.attr("width", w)
+		         			.attr("width", w+20)
 		         			.attr("height", h2);
 
 
@@ -200,7 +206,7 @@
                                 .attr("xlink:href", "forward.png")
                                 .attr("class", "next_icon")
                                 .attr("x", year_x+20)
-                                .attr("y", "30")
+                                .attr("y", padding_y_top-50)
                                 .attr("width", "20")
                                 .attr("height", "20");
 
@@ -208,11 +214,13 @@
                                 .attr("xlink:href", "back.png")
                                 .attr("class", "previous_icon")
                                 .attr("x", year_x-70)
-                                .attr("y", "30")
+                                .attr("y", padding_y_top-50)
                                 .attr("width", "20")
                                 .attr("height", "20");
 
-                         var tyear = append_text(svg,year_x,45,year);
+                         append_text(svg,470,15,"Gastos do Governo Brasileiro");
+                         append_text(svg,430,40,"Fonte: dados.gov.br");
+                         var tyear = append_text(svg,year_x,padding_y_top-35,year);
 
                          do_label_pos(svg,xScale,yScale);
 		         
@@ -220,7 +228,7 @@
 		         //Create X axis
 		         svg.append("g")
 		         	.attr("class", "axis")
-		         	.attr("transform", "translate(0," + (h - padding_l) + ")")
+		         	.attr("transform", "translate(0," + (h - padding_y) + ")")
 		         	.call(xAxis);
 		         
 		         //Create Y axis
@@ -229,6 +237,7 @@
 		         	.attr("transform", "translate(" + padding_l + ",0)")
 		         	.call(yAxis);
 
+		         //Create X axis
 		         svg2.append("g")
 		         	.attr("class", "axis")
 		         	.attr("transform", "translate(0," + (h2 + - padding_l) + ")")
@@ -237,8 +246,10 @@
 		         //Create Y axis
 		         svg2.append("g")
 		         	.attr("class", "axis")
-		         	.attr("transform", "translate(" + padding_l + ",0)")
+		         	//.attr("transform", "translate(" + 900 + padding_l + ",0)")
+		         	.attr("transform", "translate(" + padding_l   + ",0)")
 		         	.call(yAxis2);
+
 
                          rec_legend(svg,0.2,750,30);
                          rec_legend(svg,0.5,780,60);
@@ -270,9 +281,31 @@
 
                         //Make second chart
 
-                         var cols = ["total", "pessoal"];
-
+                         var cols = ["pib", "total", "pessoal"];
                          do_second_plot(svg2,data,cols,year,xScale2,yScale2);
+
+                         append_text(svg2,w-padding_r+40,padding_y2_top+30,"PIB");
+                         append_text(svg2,w-padding_r+90, padding_y2_top + 150,"Gasto Total");
+                         append_text(svg2,w-padding_r+120, padding_y2_top + 200,"Gasto c/ Pessoal");
+
+                         svg2.append("text")
+                            .attr("class", "xlabel")
+                            .attr("text-anchor", "end")
+                            .attr("x", w * 0.5)
+                            .attr("y", h2 - padding_y2 + 40)
+		            .attr("font-weight", "bold")
+                            .text("Ano");
+
+                         svg2.append("text")
+                            .attr("class", "ylabel")
+                            .attr("text-anchor", "end")
+                            .attr("x", -w * 0.13)
+                            .attr("y", 1)
+                            .attr("dy", ".75em")
+                            .attr("transform", "rotate(-90)")
+		            .attr("font-weight", "bold")
+                            .text("R$ (bi)");
+
                         //Transitions
 
                          d3.select(".next_icon")
