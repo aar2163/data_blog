@@ -101,11 +101,12 @@
                          }
                          
                         };
-                        function do_second_plot(svg,data,cols,year,xScale,yScale)
+                        function do_second_plot(svg,data,cols,year,xScale,yScale,h1)
                         {
                          var line = d3.svg.line()
                            .x(function(d) { return xScale(d[0]); })
                            .y(function(d) { return yScale(d[1]); });
+
 
                          for (var i = 0; i < cols.length; i++)
                          {
@@ -136,6 +137,36 @@
                              }
                             })
                             .style("fill", color);
+
+	         	   svg.selectAll("." + cl)
+                            .on("mouseover", function(d) {
+
+		         		//Get this bar's x/y values, then augment for the tooltip
+		         		var xPosition = parseFloat(d3.select(this).attr("cx")) + 20;
+		         		var yPosition = h1 + parseFloat(d3.select(this).attr("cy")) + 20;
+
+		         		//Update the tooltip position and value
+		         		d3.select("#tooltip2")
+		         			.style("left", xPosition + "px")
+		         			.style("top", yPosition + "px")						
+		         			.select("#value")
+		         			.text(Math.round(d[1]/1e09));
+
+		                        d3.select("#tooltip2")
+		                        	.select("#text")
+		                        	.text(d3.select(this).attr("class"));
+		            
+		         		//Show the tooltip
+		         		d3.select("#tooltip2").classed("hidden", false);
+
+
+		            })
+		            .on("mouseout", function() {
+		            
+		         		//Hide the tooltip
+		         		d3.select("#tooltip2").classed("hidden", true);
+		         		
+		            });
 
                           svg.append("path")
                           .datum(dataset2)

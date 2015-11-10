@@ -282,7 +282,7 @@
                         //Make second chart
 
                          var cols = ["pib", "total", "pessoal"];
-                         do_second_plot(svg2,data,cols,year,xScale2,yScale2);
+                         do_second_plot(svg2,data,cols,year,xScale2,yScale2,h);
 
                          append_text(svg2,w-padding_r+40,padding_y2_top+30,"PIB");
                          append_text(svg2,w-padding_r+90, padding_y2_top + 150,"Gasto Total");
