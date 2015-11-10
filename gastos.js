@@ -31,7 +31,7 @@
                          var year = 2004;
                          var vy = 'values' + year;
                          var dataset = data[vy];
-                         var dataset2 = data.pib;
+                         var dataset2 = data.total;
 
                          var domain2 = [];
                          var range2 = [];
@@ -69,6 +69,7 @@
 
 		         var yScale2 = d3.scale.linear()
 		         					 .domain([0, d3.max(dataset2, function(d) { return d[1]; })])
+		         					 //.domain([Math.pow(10,10), Math.pow(10,13)])
 		         					 //.domain([Math.pow(10,7), Math.pow(10,12)])
 		         					 .range([h2 - padding_y, padding_y]);
 
@@ -105,6 +106,9 @@
 		         				  .orient("left")
                                                           //.innerTickSize(-w+padding*3)
                                                            .tickPadding(10)
+                                                          .tickFormat(function(d) {
+                                                            return d/1e09;
+                                                           })
 		         				  .ticks(5);
                                                           //.tickFormat(function(d) { return make_log_bi(d) });
 
@@ -266,7 +270,7 @@
 
                         //Make second chart
 
-                         var cols = ["pib", "gastos"];
+                         var cols = ["total", "pessoal"];
 
                          do_second_plot(svg2,data,cols,year,xScale2,yScale2);
                         //Transitions
