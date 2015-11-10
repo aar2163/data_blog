@@ -120,9 +120,6 @@
 		         			.attr("width", w)
 		         			.attr("height", h2);
 
-                         var line = d3.svg.line()
-                           .x(function(d) { return xScale2(d[0]); })
-                           .y(function(d) { return yScale2(d[1]); });
 
 
 
@@ -269,37 +266,9 @@
 
                         //Make second chart
 
-                         var data2 = ["pib", "gastos"];
+                         var cols = ["pib", "gastos"];
 
-                         for (var i = 0; i < data2.length; i++)
-                         {
-
-                          var color = "#7887AB";
-                          var cl = data2[i];
-                          var dataset2 = data[cl];
-
-		          svg2.selectAll("." + cl)
-		            .data(dataset2)
-		            .enter()
-		            .append("circle")
-                            .attr("class", cl)
-		            .attr("cx", function(d) {
-		            		return xScale2(d[0]);
-		            })
-		            .attr("cy", function(d) {
-		            		return yScale2(d[1]);
-		            })
-		            .attr("r", 8)
-                            .style("fill", color);
-
-                          svg2.append("path")
-                          .datum(dataset2)
-                          .attr("d", line)
-                          .attr("stroke", color)
-                          .attr("stroke-width" , 3)
-                          .attr("fill", "none");
-                         }
-
+                         do_second_plot(svg2,data,cols,year,xScale2,yScale2);
                         //Transitions
 
                          d3.select(".next_icon")
@@ -317,6 +286,7 @@
 		           svg.selectAll(".label")
 		            .data(dataset);
                            do_label_pos(svg,xScale,yScale);
+                           update_second_plot(svg2,data,cols,year,xScale2,yScale2);
                          });
                          d3.select(".previous_icon")
                           .on("click", function() {
@@ -333,6 +303,7 @@
 		           svg.selectAll(".label")
 		            .data(dataset);
                            do_label_pos(svg,xScale,yScale);
+                           update_second_plot(svg2,data,cols,year,xScale2,yScale2);
                          });
                        };
 

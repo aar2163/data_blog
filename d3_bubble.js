@@ -101,3 +101,70 @@
                          }
                          
                         };
+                        function do_second_plot(svg,data,cols,year,xScale,yScale)
+                        {
+                         var line = d3.svg.line()
+                           .x(function(d) { return xScale(d[0]); })
+                           .y(function(d) { return yScale(d[1]); });
+
+                         for (var i = 0; i < cols.length; i++)
+                         {
+
+                          var color = "#7887AB";
+                          var cl = cols[i];
+                          var dataset2 = data[cl];
+
+		          svg.selectAll("." + cl)
+		            .data(dataset2)
+		            .enter()
+		            .append("circle")
+                            .attr("class", cl)
+		            .attr("cx", function(d) {
+		            		return xScale(d[0]);
+		            })
+		            .attr("cy", function(d) {
+		            		return yScale(d[1]);
+		            })
+		            .attr("r", function(d) {
+                             if (d[0] == year)
+                             {
+                              return 8;
+                             }
+                             else
+                             {
+                              return 5;
+                             }
+                            })
+                            .style("fill", color);
+
+                          svg.append("path")
+                          .datum(dataset2)
+                          .attr("d", line)
+                          .attr("stroke", color)
+                          .attr("stroke-width" , 3)
+                          .attr("fill", "none");
+                         }
+                        }
+                        function update_second_plot(svg,data,cols,year,xScale,yScale)
+                        {
+                         for (var i = 0; i < cols.length; i++)
+                         {
+
+                          var cl = cols[i];
+                          var dataset2 = data[cl];
+
+		          svg.selectAll("." + cl)
+		            .attr("r", function(d) {
+                             if (d[0] == year)
+                             {
+                              return 8;
+                             }
+                             else
+                             {
+                              return 5;
+                             }
+                            });
+
+                         }
+                        }
+
