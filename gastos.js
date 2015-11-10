@@ -218,7 +218,7 @@
                                 .attr("width", "20")
                                 .attr("height", "20");
 
-                         append_text(svg,470,15,"Gastos do Governo Brasileiro");
+                         append_text(svg,520,15,"Gastos do Governo Brasileiro (2004-2011)");
                          append_text(svg,430,40,"Fonte: dados.gov.br");
                          var tyear = append_text(svg,year_x,padding_y_top-35,year);
 
