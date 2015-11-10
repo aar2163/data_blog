@@ -3,7 +3,7 @@
 			//Width and height
 			var w = 900;
 			var h = 520;
-			var h2 = 300;
+			var h2 = 200;
 			var padding_r = 100;
 			var padding_l = 70;
                         var padding_y_top = 110;
@@ -77,6 +77,17 @@
 		         					 //.domain([Math.pow(10,11), Math.pow(10,13)])
 		         					 //.domain([Math.pow(10,7), Math.pow(10,12)])
 		         					 .range([h2 - padding_y2, padding_y2_top]);
+		         var xScale3 = d3.scale.ordinal()
+		         					 .domain(domain2)
+		         					 //.domain([Math.pow(10,7), Math.pow(10,12)])
+		         					 //.range([padding_l, w - padding_r * 2]);
+		         					 .range(range2);
+
+		         var yScale3 = d3.scale.linear()
+		         					 .domain([0, 1.5e12])
+		         					 //.domain([Math.pow(10,11), Math.pow(10,13)])
+		         					 //.domain([Math.pow(10,7), Math.pow(10,12)])
+		         					 .range([h2 - padding_y2, padding_y2_top]);
 
 
 		         //Define X axis
@@ -118,6 +129,26 @@
 		         				  .ticks(5);
                                                           //.tickFormat(function(d) { return make_log_bi(d) });
 
+		         //Define X axis
+		         var xAxis3 = d3.svg.axis()
+		         				  .scale(xScale3)
+		         				  .orient("bottom")
+                                                          //.innerTickSize(-h+padding*2)
+		         				  .ticks(5);
+                                                          //.tickFormat(function(d) { return make_log_bi(d) });
+                                                          //.tickFormat(function(d) { return "$" + Math.round(d/1e06)});
+
+		         //Define Y axis
+		         var yAxis3 = d3.svg.axis()
+		         				  .scale(yScale3)
+		         				  .orient("left")
+                                                          //.innerTickSize(-w+padding*3)
+                                                           .tickPadding(10)
+                                                          .tickFormat(function(d) {
+                                                            return d/1e09;
+                                                           })
+		         				  .ticks(5);
+
 
 		         //Create SVG element
 		         var svg = d3.select("#div1")
@@ -126,6 +157,11 @@
 		         			.attr("height", h);
 
 		         var svg2 = d3.select("#div2")
+		         			.append("svg")
+		         			.attr("width", w+20)
+		         			.attr("height", h2);
+
+		         var svg3 = d3.select("#div3")
 		         			.append("svg")
 		         			.attr("width", w+20)
 		         			.attr("height", h2);
@@ -250,6 +286,19 @@
 		         	.attr("transform", "translate(" + padding_l   + ",0)")
 		         	.call(yAxis2);
 
+		         //Create X axis
+		         svg3.append("g")
+		         	.attr("class", "axis")
+		         	.attr("transform", "translate(0," + (h2 + - padding_l) + ")")
+		         	.call(xAxis3);
+		         
+		         //Create Y axis
+		         svg3.append("g")
+		         	.attr("class", "axis")
+		         	//.attr("transform", "translate(" + 900 + padding_l + ",0)")
+		         	.attr("transform", "translate(" + padding_l   + ",0)")
+		         	.call(yAxis3);
+
 
                          rec_legend(svg,0.2,750,30);
                          rec_legend(svg,0.5,780,60);
@@ -281,12 +330,12 @@
 
                         //Make second chart
 
-                         var cols = ["pib", "total", "pessoal"];
+                         var cols = ["pib"];
                          do_second_plot(svg2,data,cols,year,xScale2,yScale2,h);
 
-                         append_text(svg2,w-padding_r+40,padding_y2_top+30,"PIB");
-                         append_text(svg2,w-padding_r+90, padding_y2_top + 150,"Gasto Total");
-                         append_text(svg2,w-padding_r+120, padding_y2_top + 200,"Gasto c/ Pessoal");
+                         append_text(svg2,w-padding_r+40,padding_y2_top+17,"PIB");
+                         /*append_text(svg2,w-padding_r+90, padding_y2_top + 150,"Gasto Total");
+                         append_text(svg2,w-padding_r+120, padding_y2_top + 200,"Gasto c/ Pessoal");*/
 
                          svg2.append("text")
                             .attr("class", "xlabel")
@@ -299,7 +348,32 @@
                          svg2.append("text")
                             .attr("class", "ylabel")
                             .attr("text-anchor", "end")
-                            .attr("x", -w * 0.13)
+                            .attr("x", -w * 0.05)
+                            .attr("y", 1)
+                            .attr("dy", ".75em")
+                            .attr("transform", "rotate(-90)")
+		            .attr("font-weight", "bold")
+                            .text("R$ (bi)");
+
+                         var cols = ["total", "pessoal"];
+                         do_second_plot(svg3,data,cols,year,xScale3,yScale3,h+h2);
+
+                         //append_text(svg3,w-padding_r+40,padding_y2_top+30,"PIB");
+                         append_text(svg3,w-padding_r+90, padding_y2_top + 20,"Gasto Total");
+                         append_text(svg3,w-padding_r+120, padding_y2_top + 95,"Gasto c/ Pessoal");
+
+                         svg3.append("text")
+                            .attr("class", "xlabel")
+                            .attr("text-anchor", "end")
+                            .attr("x", w * 0.5)
+                            .attr("y", h2 - padding_y2 + 40)
+		            .attr("font-weight", "bold")
+                            .text("Ano");
+
+                         svg3.append("text")
+                            .attr("class", "ylabel")
+                            .attr("text-anchor", "end")
+                            .attr("x", -w * 0.05)
                             .attr("y", 1)
                             .attr("dy", ".75em")
                             .attr("transform", "rotate(-90)")
@@ -323,7 +397,10 @@
 		           svg.selectAll(".label")
 		            .data(dataset);
                            do_label_pos(svg,xScale,yScale);
+                           cols = ["pib"];
                            update_second_plot(svg2,data,cols,year,xScale2,yScale2);
+                           cols = ["total", "pessoal"];
+                           update_second_plot(svg3,data,cols,year,xScale3,yScale3);
                          });
                          d3.select(".previous_icon")
                           .on("click", function() {
@@ -340,7 +417,10 @@
 		           svg.selectAll(".label")
 		            .data(dataset);
                            do_label_pos(svg,xScale,yScale);
+                           cols = ["pib"];
                            update_second_plot(svg2,data,cols,year,xScale2,yScale2);
+                           cols = ["total", "pessoal"];
+                           update_second_plot(svg3,data,cols,year,xScale3,yScale3);
                          });
                        };
 
